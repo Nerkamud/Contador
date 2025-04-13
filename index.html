@@ -3,41 +3,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contador Épico</title>
   <style>
     body {
-      margin: 0;
-      font-family: sans-serif;
-      background: black;
+      background: black url('fortaleza_asediada.jpg') no-repeat center center fixed;
+      background-size: cover;
       text-align: center;
+      font-family: sans-serif;
       color: white;
+      padding: 50px;
     }
-    #loader {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2em;
-      z-index: 9999;
-    }
-    #contenido {
-      display: none;
-      padding-top: 50px;
-    }
-    .contadorSeccion {
-      margin: 20px 0;
-    }
-    .titulo {
-      font-size: 40px;
-      margin: 10px 0;
-    }
-    .valor {
+    #contadorEnemigo, #contadorHeroe {
       font-size: 60px;
-      margin: 10px 0;
+      margin: 20px 0;
     }
     button {
       font-size: 20px;
@@ -45,130 +24,83 @@
       padding: 10px 20px;
       cursor: pointer;
     }
-    #mensajeFinal, #mensajeHeroe {
+    #mensaje {
       font-size: 50px;
-      font-weight: bold;
-      color: cyan;
-      text-shadow: 2px 2px 5px black;
-      margin-top: 20px;
+      color: red;
+      text-shadow: 2px 2px 4px black;
+      margin: 20px 0;
     }
-    #reiniciarBtn {
+    #reiniciar {
       display: none;
-      background: none;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
       border: none;
       cursor: pointer;
-      text-align: center;
-      margin-top: 20px;
+      margin: 20px auto;
     }
-    #reiniciarBtn span {
-      display: block;
-      font-size: 60px;
-      line-height: 60px;
-    }
-    #reiniciarTexto {
-      display: block;
-      font-size: 8px; /* reducido a un cuarto aproximadamente */
+    #reiniciar span {
+      font-size: 8px;
+      text-shadow: 0 0 3px black;
       color: white;
-      text-shadow: 1px 1px 3px black;
-      margin-top: 4px;
+      margin-top: 2px;
     }
   </style>
 </head>
 <body>
-<div id="loader">⚔️ Preparando el campo de batalla...</div>
-<div id="contenido">
-  <div class="contadorSeccion">
-    <div class="titulo">Enemigo</div>
-    <div id="contador" class="valor">0</div>
-    <div id="botonesContador">
-      <button onclick="cambiarContador(1)">+1</button>
-      <button onclick="cambiarContador(5)">+5</button>
-      <button onclick="cambiarContador(-1)">-1</button>
-      <button onclick="cambiarContador(-5)">-5</button>
-    </div>
-    <div id="mensajeFinal"></div>
+  <h1>Contador Épico</h1>
+  <div>
+    <h2>Enemigo</h2>
+    <div id="contadorEnemigo">0</div>
+    <button onclick="cambiarContador('Enemigo', 1)">+1</button>
+    <button onclick="cambiarContador('Enemigo', 5)">+5</button>
+    <button onclick="cambiarContador('Enemigo', -1)">-1</button>
+    <button onclick="cambiarContador('Enemigo', -5)">-5</button>
   </div>
-
-  <div class="contadorSeccion">
-    <div class="titulo">Vida del Héroe</div>
-    <div id="vidaHeroe" class="valor">0</div>
-    <div id="botonesHeroe">
-      <button onclick="cambiarVida(1)">+1</button>
-      <button onclick="cambiarVida(5)">+5</button>
-      <button onclick="cambiarVida(-1)">-1</button>
-      <button onclick="cambiarVida(-5)">-5</button>
-    </div>
-    <div id="mensajeHeroe"></div>
-    <button id="reiniciarBtn" onclick="reiniciar()">
-      <span>⚜️</span>
-      <span id="reiniciarTexto">Reiniciar</span>
-    </button>
+  <div>
+    <h2>Vida del Héroe</h2>
+    <div id="contadorHeroe">0</div>
+    <button onclick="cambiarContador('Heroe', 1)">+1</button>
+    <button onclick="cambiarContador('Heroe', 5)">+5</button>
+    <button onclick="cambiarContador('Heroe', -1)">-1</button>
+    <button onclick="cambiarContador('Heroe', -5)">-5</button>
   </div>
-</div>
+  <div id="mensaje"></div>
+  <button id="reiniciar" onclick="reiniciarPagina()">
+    ⚜️
+    <span>Reiniciar</span>
+  </button>
+  <script>
+    let valores = { Enemigo: 0, Heroe: 0 };
 
-<script>
-  let valor = 0;
-  let mensajeMostrado = false;
-  let vida = 0;
+    function cambiarContador(tipo, cambio) {
+      valores[tipo] += cambio;
+      if (valores[tipo] > 100) valores[tipo] = 100;
+      if (valores[tipo] < 0) valores[tipo] = 0;
 
-  function cambiarContador(cambio) {
-    valor += cambio;
-    if (valor > 100) valor = 100;
-    if (valor < 0) valor = 0;
-    document.getElementById('contador').textContent = valor;
+      document.getElementById('contador' + tipo).textContent = valores[tipo];
 
-    if (valor === 0 && !mensajeMostrado) {
-      document.body.style.background = "url('fortaleza_destruida_real.jpg') no-repeat center center fixed";
-      document.body.style.backgroundSize = "cover";
-      document.getElementById('mensajeFinal').textContent = '¡¡ENEMIGO DERROTADO!!';
-      mensajeMostrado = true;
-    } else if (valor > 0) {
-      document.body.style.background = "url('fortaleza_asediada_real.jpg') no-repeat center center fixed";
-      document.body.style.backgroundSize = "cover";
-      document.getElementById('mensajeFinal').textContent = '';
-      mensajeMostrado = false;
-    }
-  }
-
-  function cambiarVida(cambio) {
-    vida += cambio;
-    if (vida > 100) vida = 100;
-    if (vida < 0) vida = 0;
-    document.getElementById('vidaHeroe').textContent = vida;
-
-    if (vida === 0) {
-      document.getElementById('mensajeHeroe').textContent = 'Has sido derrotado';
-      document.getElementById('botonesContador').style.display = 'none';
-      document.getElementById('botonesHeroe').style.display = 'none';
-      document.getElementById('reiniciarBtn').style.display = 'inline-block';
-    } else {
-      document.getElementById('mensajeHeroe').textContent = '';
-      document.getElementById('botonesContador').style.display = 'block';
-      document.getElementById('botonesHeroe').style.display = 'block';
-      document.getElementById('reiniciarBtn').style.display = 'none';
-    }
-  }
-
-  function reiniciar() {
-    location.reload();
-  }
-
-  let images = ['fortaleza_asediada_real.jpg', 'fortaleza_destruida_real.jpg'];
-  let loaded = 0;
-
-  images.forEach(function(src) {
-    const img = new Image();
-    img.src = src;
-    img.onload = function() {
-      loaded++;
-      if (loaded === images.length) {
-        document.body.style.background = "url('fortaleza_asediada_real.jpg') no-repeat center center fixed";
-        document.body.style.backgroundSize = "cover";
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('contenido').style.display = 'block';
+      if (tipo === 'Enemigo' && valores[tipo] === 0) {
+        document.getElementById('mensaje').textContent = '¡ENEMIGO DERROTADO!';
+        document.body.style.backgroundImage = "url('fortaleza_destruida.jpg')";
+      }
+      if (tipo === 'Heroe' && valores[tipo] === 0) {
+        document.getElementById('mensaje').textContent = 'Has sido derrotado';
+        document.body.style.backgroundImage = "url('muerte_derrota.jpg')";
+        ocultarBotones();
       }
     }
-  });
-</script>
+
+    function ocultarBotones() {
+      document.querySelectorAll('button').forEach(btn => {
+        if (btn.id !== 'reiniciar') btn.style.display = 'none';
+      });
+      document.getElementById('reiniciar').style.display = 'flex';
+    }
+
+    function reiniciarPagina() {
+      location.reload();
+    }
+  </script>
 </body>
 </html>
